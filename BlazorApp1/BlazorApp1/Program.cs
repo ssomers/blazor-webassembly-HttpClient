@@ -2,6 +2,7 @@ using BlazorApp1.Client.Pages;
 using BlazorApp1.Components;
 using BlazorApp1.Components.Account;
 using BlazorApp1.Data;
+using BlazorApp1.Shared;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -16,6 +17,9 @@ builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddScoped<IdentityUserAccessor>();
 builder.Services.AddScoped<IdentityRedirectManager>();
 builder.Services.AddScoped<AuthenticationStateProvider, PersistingServerAuthenticationStateProvider>();
+
+builder.Services.AddHttpClient();
+//builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:7242/") });
 
 builder.Services.AddAuthorization();
 builder.Services.AddAuthentication(options =>
@@ -64,4 +68,19 @@ app.MapRazorComponents<App>()
 // Add additional endpoints required by the Identity /Account Razor components.
 app.MapAdditionalIdentityEndpoints();
 
+app.MapGet("/api/Weather/Now", () => TypedResults.Ok(WeatherNow()));
+
 app.Run();
+
+
+WeatherForecast[] WeatherNow()
+{
+    var startDate = DateOnly.FromDateTime(DateTime.Now);
+    var summaries = new[] { "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching" };
+    return Enumerable.Range(1, 5).Select(index => new WeatherForecast
+    {
+        Date = startDate.AddDays(index),
+        TemperatureC = Random.Shared.Next(-20, 55),
+        Summary = summaries[Random.Shared.Next(summaries.Length)]
+    }).ToArray();
+}
