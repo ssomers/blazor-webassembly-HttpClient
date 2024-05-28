@@ -18,8 +18,7 @@ builder.Services.AddScoped<IdentityUserAccessor>();
 builder.Services.AddScoped<IdentityRedirectManager>();
 builder.Services.AddScoped<AuthenticationStateProvider, PersistingServerAuthenticationStateProvider>();
 
-builder.Services.AddHttpClient();
-//builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:7242/") });
+builder.Services.AddTransient<IWeatherService, NullWeatherService>();
 
 builder.Services.AddAuthorization();
 builder.Services.AddAuthentication(options =>

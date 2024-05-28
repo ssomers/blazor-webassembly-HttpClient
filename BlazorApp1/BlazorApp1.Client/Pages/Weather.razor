@@ -1,7 +1,7 @@
 ﻿@page "/weather"
 @rendermode InteractiveWebAssembly
 @attribute [StreamRendering]
-@inject HttpClient Http
+@inject IWeatherService WeatherService
 
 <PageTitle>Weather</PageTitle>
 
@@ -43,7 +43,6 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        if (Http.BaseAddress is not null)
-            forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("api/Weather/Now");
+        forecasts = await WeatherService.Forecast();
     }
 }
